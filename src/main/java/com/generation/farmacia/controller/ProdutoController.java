@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("produto")
@@ -62,6 +64,18 @@ public class ProdutoController {
     public ResponseEntity<List<Produto>> getProdutoByBetween(@RequestParam BigDecimal[] list)
     {
         return ResponseEntity.ok(produtoRepository.findAllByPrecoIsB(list[0] ,list[1]));
+    }
+    @DeleteMapping("/{id}")
+    public void deletarProduto (@PathVariable Long id)
+    {
+        Optional<Produto> categoria = produtoRepository.findById(id);
+
+        if(categoria.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        produtoRepository.deleteById(id);
+
+
+
     }
 
 }
